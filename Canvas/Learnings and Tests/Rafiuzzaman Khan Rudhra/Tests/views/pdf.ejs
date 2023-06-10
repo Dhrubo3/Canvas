@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFJS Test</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <canvas id="the-canvas"></canvas>
+
+</body>
+
+<script>
+    
+      const loadingTask = pdfjsLib.getDocument("/pdf/files-1.pdf");
+  loadingTask.promise.then(pdf => {
+    pdf.getPage(1).then(function(page) {
+    var scale = 1.5;
+var viewport = page.getViewport({ scale: scale, });
+// Support HiDPI-screens.
+var outputScale = window.devicePixelRatio || 1;
+
+var canvas = document.getElementById('the-canvas');
+var context = canvas.getContext('2d');
+
+canvas.width = Math.floor(viewport.width * outputScale);
+canvas.height = Math.floor(viewport.height * outputScale);
+canvas.style.width = Math.floor(viewport.width) + "px";
+canvas.style.height =  Math.floor(viewport.height) + "px";
+canvas.style.border = "2px solid grey"
+
+var transform = outputScale !== 1
+  ? [outputScale, 0, 0, outputScale, 0, 0]
+  : null;
+
+var renderContext = {
+  canvasContext: context,
+  transform: transform,
+  viewport: viewport
+};
+page.render(renderContext);
+
+var img_data = canvas.toDataURL("image/png");
+var image_base64 = canvas.toDataURL('image/jpeg');
+console.log(image_base64)
+
+$.ajax({
+    type: 'POST',
+    // make sure you respect the same origin policy with this url:
+    // http://en.wikipedia.org/wiki/Same_origin_policy
+    url: '/pdf',
+    data: { 
+        'imageBase64Data': image_base64,
+    },
+    success: function(msg){
+        alert('wow' + msg);
+    }
+});
+});
+
+
+});
+
+
+
+
+ 
+
+
+</script>
+
+</html>

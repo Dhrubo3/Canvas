@@ -1,0 +1,12 @@
+<%- include('partials/header') %>
+
+    <div class="p-5 row">
+        <div>    
+            <h4>You got <%=obtainedMarks%> out of <%=totalMarks%> correct</h4>
+        </div>
+        <div>
+            <a href="/task/<%=contentId%>/performquiz" class="btn btn-primary mt-3">Continue</a>
+        </div>
+    </div>
+
+<%- include('partials/footer') %>

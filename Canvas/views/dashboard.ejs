@@ -1,0 +1,55 @@
+<%- include('partials/header') %>
+
+<%- include('partials/navbar', {user: user}) %>
+  
+
+    <div class="container-fluid col-9 p-0" style="margin-top: 80px;">
+      
+        <div class="row">
+          <div class="col-md-12 mb-2">
+            <%if (user.userType === "Teacher"){%>
+              <h4>YOUR COHORTS</h4>
+            <%}else if (user.userType === "Student"){%>
+              <%if (cohorts.length === 0){%>
+                <h4>YOU ARE NOT ENROLLED IN ANY COHORTS</h4>
+              <%}else{%>
+                <h4>ENROLLED COHORTS</h4>
+              <%}%>
+            <%}%>
+          </div>
+        </div>
+
+        <div class="row">
+          <% for (var i = 0; i < cohorts.length; i++){ %>
+           <div class="col-md-3 mb-5">
+              <div class="card bg-white text-black h-100">
+                <div class="card-body py-5">
+                  <h5 class="card-title"><%= cohorts[i].title %></h5>
+                  <p class="card-text"><%= cohorts[i].description %></p>
+                </div>
+                  <a href="/cohort/<%= cohorts[i].id %>" class="text-decoration-none">
+                    <div class="card-footer d-flex bg-primary text-white">
+                      Go ->
+                    </div>
+                  </a>
+              </div>
+            </div>
+          <% } %>
+          <%if(user.userType === "Teacher"){%>
+            <div class="col-md-3 mb-5">
+              <div class="card bg-white text-black h-100">
+                <div class="card-body py-5 d-flex justify-content-center">
+                  <i class="fa-solid fa-circle-plus fa-5x"></i>
+                </div>
+                  <a href="/newcohort" class="text-decoration-none">
+                    <div class="card-footer d-flex bg-primary text-white">
+                      Create new Cohort
+                    </div>
+                  </a>
+              </div>
+            </div>
+          <%}%>
+        </div>
+    </div>
+
+<%- include('partials/footer') %>

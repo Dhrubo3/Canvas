@@ -1,0 +1,85 @@
+<%- include('partials/header') %>
+
+  <%- include('partials/navbar', {user: user}) %>
+  
+
+      <div class="container-fluid col-9 p-0" style="margin-top: 80px;">
+      
+        <div class="row">
+          <div class="col-md-12 mb-2">
+            <h4><%= cohort.title %></h4>
+            <p><%= cohort.description %></p>
+          </div>
+        </div>
+        
+        <hr class="mt-3">
+
+        <% if (cohort.contents.length === 0){ %>
+          <div class="row">
+            <div class="col-md-12 mb-2">
+              <h4> No Content Assigned Yet </h4>
+            </div>
+          </div>
+        <% } %>
+        
+        <div class="row">
+          <% for (var i = 0; i < cohort.contents.length; i++){ %>
+           <div class="col-md-3 mb-5">
+              <div class="card bg-white text-black h-100">
+                <div class="card-body py-5">
+                  <h5 class="card-title"><%= cohort.contents[i].name %></h5>
+                  <p class="card-text">Due: <%= cohort.contents[i].closeDate.toLocaleString() %></p>
+                </div>
+                  <a href="/task/<%=cohort.contents[i].id%>" class="text-decoration-none">
+                    <div class="card-footer d-flex bg-primary text-white">
+                      View ->
+                    </div>
+                  </a>
+              </div>
+            </div>
+          <% } %>
+          <% if (user.userType === "Teacher"){ %>  
+            <div class="col-md-3 mb-5">
+              <div class="card bg-white text-black h-100">
+                <div class="card-body py-5 d-flex justify-content-center">
+                  <i class="fa-solid fa-circle-plus fa-5x"></i>
+                </div>
+                  <a href="<%=cohort.id%>/uploadcontent" class="text-decoration-none">
+                    <div class="card-footer d-flex bg-primary text-white">
+                      Assign Reaing Task
+                    </div>
+                  </a>
+              </div>
+            </div>
+            <% } %>
+        </div>
+        
+        <% if (user.userType === "Teacher"){ %>
+        <h4 class="mt-3">Associated Cohorts</h4>
+        <hr>
+      
+        <div class="row">
+          <% if (cohort.subCohorts.length > 0){ %>
+          <% for (var j = 0; j < cohort.subCohorts.length; j++){ %>
+           <div class="col-md-3 mb-5">
+              <div class="card bg-white text-black h-100">
+                <div class="card-body py-5">
+                  <h5 class="card-title"><%= cohort.subCohorts[j].title %></h5>
+                  <p class="card-text"><%= cohort.subCohorts[j].description %></p>
+                </div>
+                  <a href="/cohort/<%= cohort.subCohorts[j].id %>" class="text-decoration-none">
+                    <div class="card-footer d-flex bg-primary text-white">
+                      Go ->
+                    </div>
+                  </a>
+              </div>
+            </div>
+          <% }} else { %>
+            <h5>None</h5>
+            <% } %>
+        </div>
+        <% } %>
+      </div>
+
+
+<%- include('partials/footer') %>

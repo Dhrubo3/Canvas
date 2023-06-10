@@ -1,0 +1,75 @@
+<%- include('partials/header') %>
+<div id="contentId" data-test=<%=contentId %>></div>
+<div id="pageNum" data-test=<%=pageNum %>></div>
+<div id="section" data-test=<%=section %>></div>
+    <div class="m-5 ps-5 pe-5">
+        <div class=" mt-5 mb-3">
+            <div class="d-flex justify-content-center">
+                <% if (parseInt(pageNum) === 1 && section === "top"){ %>
+                    
+                <%} else {%>
+                    <% if (section === "top"){ %>
+                        <% prevSection = "bottom" %>
+                        <% prevPage = parseInt(pageNum) - 1 %>
+                    <%} else {%>
+                        <% prevSection = "top" %>
+                        <% prevPage = parseInt(pageNum) %>
+                    <%}%>
+                    <a href="/task/<%=contentId%>/page/<%=prevPage%>/section/<%=prevSection%>" class="btn btn-primary ms-5 me-5">Previous</a>
+                <%}%>    
+                <% if (parseInt(pageNum) === totalPage && section === "bottom"){ %>
+                    
+                <%} else {%>
+                    <% if (section === "top"){ %>
+                        <% nextSection = "bottom" %>
+                        <% nextPage = parseInt(pageNum) %>
+                    <%} else {%>
+                        <% nextSection = "top" %>
+                        <% nextPage = parseInt(pageNum) + 1 %>
+                    <%}%>
+                    <a href="/task/<%=contentId%>/page/<%=nextPage%>/section/<%=nextSection%>" class="btn btn-primary ms-5 me-5">Next</a>
+                <%}%>
+                <a href="/task/<%=contentId%>/" class="btn btn-warning ms-5 me-5">Stop Reading!</a>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <!-- <embed class="mb-5" src='/uploads/<%=folderName%>/<%=imgName%>#toolbar=0&navpanes=0&scrollbar=0' type="application/pdf" style="width: 100%; height: 100vh;"> -->
+            <img src="/uploads/<%=folderName%>/<%=imgName%>" alt="" style="width: 1275px; height: auto;">
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        let startDate = new Date();
+        let elapsedTime = 0;
+
+        const focus = function() {
+            startDate = new Date();
+        };
+
+        const blur = function() {
+            const endDate = new Date();
+            const spentTime = endDate.getTime() - startDate.getTime();
+            elapsedTime += spentTime;
+        };
+
+        const beforeunload = function() {
+            const endDate = new Date();
+            const spentTime = endDate.getTime() - startDate.getTime();
+            elapsedTime += spentTime;
+            
+            var contentId = document.getElementById('contentId').dataset.test;
+            var pageNum = document.getElementById('pageNum').dataset.test;
+            var section = document.getElementById('section').dataset.test;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/task/"+contentId+"/page/"+pageNum+"/section/"+section, true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send("readingTime="+ Math.ceil(elapsedTime * 0.001));
+        };
+
+        window.addEventListener('focus', focus);
+        window.addEventListener('blur', blur);
+        window.addEventListener('beforeunload', beforeunload);
+    </script>
+
+<%- include('partials/footer') %>

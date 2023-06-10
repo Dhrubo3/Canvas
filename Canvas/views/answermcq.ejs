@@ -1,0 +1,48 @@
+<%- include('partials/header') %>
+
+
+<div class="h-100 d-flex align-items-center justify-content-center p-5 row">
+    <form action="/<%=contentId%>/<%=quizId%>/checkmcq" method="post" class="w-50" id="form">
+        <div id="allMcq">
+            <% for (var i = 0; i < mcq.length; i++){ %>
+                <div class="form-group d-flex mb-4">
+                    <h4><%=mcq[i].question%></h4>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-6">
+                        <h5>A) <%=mcq[i].optionA%></h5>
+                    </div>
+                    <div class="col-6">
+                        <h5>B) <%=mcq[i].optionB%></h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <h5>C) <%=mcq[i].optionC%></h5>
+                    </div>
+                    <div class="col-6">
+                        <h5>D) <%=mcq[i].optionD%></h5>
+                    </div>
+                </div>
+                <div class="form-group d-flex mt-2">
+                    <label for="choosenAnswer" class="col-form-label col-sm-3"><b>Choose the correct answer:*</b></label>
+                    <select class="form-select w-25" name="choosenAnswer[]">
+                        <option value="">Select</option>
+                        <option value="Option A">Option A</option>
+                        <option value="Option B">Option B</option>
+                        <option value="Option C">Option C</option>
+                        <option value="Option D">Option D</option>
+                    </select>
+                </div>
+                <hr class="mt-4 mb-4">
+            <%}%>
+        </div>
+
+        <div class="d-flex align-items-center row">    
+            <button type="submit" class="btn btn-primary w-25 mt-5 ms-3 me-3"> Submit </button>
+        </div>  
+    </form>
+</div>
+
+
+<%- include('partials/footer') %>

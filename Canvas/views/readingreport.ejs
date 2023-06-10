@@ -1,0 +1,97 @@
+<%- include('partials/header') %>
+<div id="xValues" data-test=<%=xValues %>></div>
+<div id="yValues" data-test=<%=yValues %>></div>
+<div>
+    <canvas id="myChart" width="600" height="600"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    var xValues = document.getElementById('xValues').dataset.test;
+    var yValues = document.getElementById('yValues').dataset.test;
+    x_vals = xValues.split(",")
+    y_vals = yValues.split(",")
+    console.log(y_vals)
+    const data = x_vals.map((k, i) => ({
+        x: k,
+        y: y_vals[i]
+    }));
+
+    const backgroundColor = Array(x_vals.length).fill('rgba(255, 99, 132, 0.2)');
+    const borderColor = Array(x_vals.length).fill('rgba(255, 99, 132, 1)');
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            datasets: [{
+                label: 'No. of Students',
+                data: data,
+                backgroundColor: backgroundColor,
+                borderColor: borderColor,
+                borderWidth: 1,
+                barPercentage: 1,
+                categoryPercentage: 1,
+                borderRadius: 5,
+            }]
+        },
+        options: {
+            responsive: false,
+            scales: {
+                x: {
+                    type: 'linear',
+                    offset: false,
+                    grid: {
+                        offset: false
+                    },
+                    ticks: {
+                        stepSize: 10
+                    },
+                    title: {
+                        display: true,
+                        text: 'Reading Time (Seconds)',
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                y: {
+                    // beginAtZero: true
+                    ticks: {
+                        stepSize: 1
+                    },
+                    title: {
+                        display: true,
+                        text: 'No. of Students',
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    callbacks: {
+                        title: (items) => {
+                            if (!items.length) {
+                                return '';
+                            }
+                            const item = items[0];
+                            const x = item.parsed.x;
+                            const min = x - 5;
+                            const max = x + 5;
+                            return `Reading Time: ${min} - ${max}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+
+<%- include('partials/footer') %>

@@ -1,0 +1,30 @@
+.home-btn{
+    width: 100%;
+    text-align: left;
+    background-color: white;
+    border-width: 2px;
+}
+
+.top-center{
+    align-items: center;
+    min-height: 100vh;
+}
+
+#select{
+  max-width: 100%;
+}
+
+.vscomp-toggle-button{
+  padding: 10px;
+  border-radius: 7px;
+}
+
+.record-button {
+  height: 8em;
+  width: 8em;
+  border-color: #f3f3f3 !important;
+}
+
+.record-button:hover {
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}

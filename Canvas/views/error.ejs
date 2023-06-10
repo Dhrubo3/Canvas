@@ -1,0 +1,16 @@
+<%- include('partials/header') %>
+
+    <div class="p-5 row">
+        <div>    
+            <% if (typeof alert != "undefined") { %>
+                <% alert.forEach(function(error){ %> 
+                    <h4><%=error.msg%></h4>
+                <% }) %>
+            <% } %>
+        </div>
+        <div>
+            <button class="btn btn-primary mt-3" onclick="history.back()">Try Again</button>
+        </div>
+    </div>
+
+<%- include('partials/footer') %>

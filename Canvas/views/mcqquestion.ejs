@@ -1,0 +1,189 @@
+<%- include('partials/header') %>
+
+
+<div class="h-100 d-flex align-items-center justify-content-center p-5 row">
+    <form action="/<%=contentId%>/<%=quizId%>/addmcq" method="post" class="w-50" id="form">
+        <div id="allMcq">
+            <% for (var i = 0; i < mcq.length; i++){ %>
+                <div class="form-group d-flex mb-4">
+                    <label for="question" class="col-sm-2 col-form-label">Question:*</label>
+                    <input type="text" name="question[]" class="form-control " id="question" value="<%=mcq[i].question%>">
+                </div>
+                <div class="row mb-2">
+                    <div class="col-6">
+                        <input type="text" name="optionA[]" class="form-control " id="optionA" value="<%=mcq[i].optionA%>">
+                    </div>
+                    <div class="col-6">
+                        <input type="text" name="optionB[]" class="form-control " id="optionB" value="<%=mcq[i].optionB%>">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <input type="text" name="optionC[]" class="form-control " id="optionC" value="<%=mcq[i].optionC%>">
+                    </div>
+                    <div class="col-6">
+                        <input type="text" name="optionD[]" class="form-control " id="optionD" value="<%=mcq[i].optionD%>">
+                    </div>
+                </div>
+                <div class="form-group d-flex mt-2">
+                    <label for="correctOption" class="col-form-label col-sm-5">Choose the correct answer:*</label>
+                    <select class="form-select w-25" name="correctOption[]">
+                        <option value="<%=mcq[i].correctOption%>"><%=mcq[i].correctOption%></option>
+                        <option value="Option A">Option A</option>
+                        <option value="Option B">Option B</option>
+                        <option value="Option C">Option C</option>
+                        <option value="Option D">Option D</option>
+                    </select>
+                </div>
+                <div class="form-group d-flex mt-2">
+                    <label for="page" class="col-form-label col-sm-5">The page where the question is from:*</label>
+                    <select class="form-select w-25" name="page[]">
+                        <option value="<%=mcq[i].questionFromPage%>"><%=mcq[i].questionFromPage%></option>
+                        <% for (var j = 0; j < numberOfPages; j++){ %>
+                            <option value="Page <%=(j+1)%>">Page <%=(j+1)%></option>
+                        <%}%>
+                    </select>
+                </div>
+                <div class="form-group d-flex mb-4 mt-2">
+                    <label for="section" class="col-form-label col-sm-5">Page Section:*</label>
+                    <select class="form-select w-25" name="section[]">
+                        <% sectionName = mcq[i].questionFromSection.charAt(0).toUpperCase() + mcq[i].questionFromSection.slice(1) %>
+                        <option value="<%=sectionName%>"><%=sectionName%></option>
+                        <option value="top">Top</option>
+                        <option value="bottom">Bottom</option>
+                    </select>
+                </div>
+            <%}%>
+            <% if (mcq.length > 0){ %>
+                <div class="form-group d-flex mb-4">
+                    <label for="question" class="col-sm-2 col-form-label">Question:*</label>
+                    <input type="text" name="question[]" class="form-control " id="question" placeholder="Write the question">
+                </div>
+                <div class="row mb-2">
+                    <div class="col-6">
+                        <input type="text" name="optionA[]" class="form-control " id="optionA" placeholder="Option A">
+                    </div>
+                    <div class="col-6">
+                        <input type="text" name="optionB[]" class="form-control " id="optionB" placeholder="Option B">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <input type="text" name="optionC[]" class="form-control " id="optionC" placeholder="Option C">
+                    </div>
+                    <div class="col-6">
+                        <input type="text" name="optionD[]" class="form-control " id="optionD" placeholder="Option D">
+                    </div>
+                </div>
+                <div class="form-group d-flex mt-2">
+                    <label for="correctOption" class="col-form-label col-sm-5">Choose the correct answer:*</label>
+                    <select class="form-select w-25" name="correctOption[]">
+                        <option value="">Select</option>
+                        <option value="Option A">Option A</option>
+                        <option value="Option B">Option B</option>
+                        <option value="Option C">Option C</option>
+                        <option value="Option D">Option D</option>
+                    </select>
+                </div>
+                <div class="form-group d-flex mt-2">
+                    <label for="page" class="col-form-label col-sm-5">The page where the question is from:*</label>
+                    <select class="form-select w-25" name="page[]">
+                        <option value="">Select</option>
+                        <% for (var i = 0; i < numberOfPages; i++){ %>
+                            <option value="Page <%=(i+1)%>">Page <%=(i+1)%></option>
+                        <%}%>
+                    </select>
+                </div>
+                <div class="form-group d-flex mb-4 mt-2">
+                    <label for="section" class="col-form-label col-sm-5">Page Section:*</label>
+                    <select class="form-select w-25" name="section[]">
+                        <option value="">Select</option>
+                        <option value="top">Top</option>
+                        <option value="bottom">Bottom</option>
+                    </select>
+                </div>
+            <%}%> 
+        </div>
+
+        <div class="d-flex align-items-center justify-content-center row">    
+            <button type="button" class="btn btn-primary w-25 mt-5 ms-3 me-3" id="showMcq" onclick="addMcq()">Add MCQ Question</button>
+            <button type="submit" class="btn btn-primary w-25 mt-5 ms-3 me-3"> Done </button>
+        </div>  
+    </form>
+</div>
+    
+    
+<div id="mcqQuestion" class="invisible">
+    <div id="removeId">
+        <div class="form-group d-flex mb-4">
+            <label for="question" class="col-sm-2 col-form-label">Question:*</label>
+            <input type="text" name="question[]" class="form-control " id="question" placeholder="Write the question">
+            <button type="button" class="btn btn-danger ms-5" onclick="removeQuestion()" id="remove-question">Remove</button>
+        </div>
+        <div class="row mb-2">
+            <div class="col-6">
+                <input type="text" name="optionA[]" class="form-control " id="optionA" placeholder="Option A">
+            </div>
+            <div class="col-6">
+                <input type="text" name="optionB[]" class="form-control " id="optionB" placeholder="Option B">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <input type="text" name="optionC[]" class="form-control " id="optionC" placeholder="Option C">
+            </div>
+            <div class="col-6">
+                <input type="text" name="optionD[]" class="form-control " id="optionD" placeholder="Option D">
+            </div>
+        </div>
+        <div class="form-group d-flex mt-2">
+            <label for="correctOption" class="col-form-label col-sm-5">Choose the correct answer:*</label>
+            <select class="form-select w-25" name="correctOption">
+                <option value="">Select</option>
+                <option value="Option A">Option A</option>
+                <option value="Option B">Option B</option>
+                <option value="Option C">Option C</option>
+                <option value="Option D">Option D</option>
+            </select>
+        </div>
+        <div class="form-group d-flex mt-2">
+            <label for="page" class="col-form-label col-sm-5">The page where the question is from:*</label>
+            <select class="form-select w-25" name="page">
+                <option value="">Select</option>
+                <% for (var i = 0; i < numberOfPages; i++){ %>
+                    <option value="Page <%=(i+1)%>">Page <%=(i+1)%></option>
+                <%}%>
+            </select>
+        </div>
+        <div class="form-group d-flex mb-4 mt-2">
+            <label for="section" class="col-form-label col-sm-5">Page Section:*</label>
+            <select class="form-select w-25" name="section[]">
+                <option value="">Select</option>
+                <option value="top">Top</option>
+                <option value="bottom">Bottom</option>
+            </select>
+        </div>    
+    </div>
+</div>
+
+
+
+<script>
+    function addMcq() {
+        let div = document.createElement("div");
+        div.innerHTML = document.getElementById("mcqQuestion").innerHTML;
+        div.style.display = "block"
+        document.getElementById("allMcq").appendChild(div)
+    }
+
+    // $(".remove-question").on("click", function(){
+    //     $(this).closest("#mcqQuestion").remove();
+    // });
+
+    function removeQuestion(){
+        const removeDiv = document.getElementById("remove-question").closest("#removeId").remove()
+    }
+</script>
+
+
+<%- include('partials/footer') %>

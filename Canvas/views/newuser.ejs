@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+
+<div class="d-flex justify-content-center top-center">
+    <div class="row">    
+        <% if (typeof alert != "undefined") { %>
+            <% alert.forEach(function(error){ %>    
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <%= error.msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <% }) %>
+        <% } %>
+        <form action="/newuser" method="post">    
+            <label for="userType" class="col-form-label">Are you a teacher or a student?</label>
+            <select class="form-select" name="userType">
+                <option value="">Select</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Student">Student</option>
+            </select>
+            <div class="col-sm-4 m-3 mx-auto">
+                <button type="submit" name="button" class="btn btn-primary ">submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

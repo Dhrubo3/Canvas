@@ -1,0 +1,26 @@
+<%- include('partials/header') %>
+
+
+<div class="h-100 d-flex align-items-center justify-content-center p-5 row">
+    <form action="/<%=contentId%>/<%=quizId%>/checktext" method="post" class="w-50" id="form">
+        <div id="allMcq">
+            <% for (var i = 0; i < text.length; i++){ %>
+                <div class="form-group d-flex mb-4">
+                    <h4><%=text[i].question%></h4>
+                </div>
+                <div class="form-group d-flex mt-2">
+                    <label for="answer" class="col-form-label col-sm-2"><b>Answer:*</b></label>
+                    <input type="text" name="answer[]" class="form-control " id="answer" placeholder="Your Answer">
+                </div>
+                <hr class="mt-4 mb-4">
+            <%}%>
+        </div>
+
+        <div class="d-flex align-items-center row">    
+            <button type="submit" class="btn btn-primary w-25 mt-5 ms-3 me-3"> Submit </button>
+        </div>  
+    </form>
+</div>
+
+
+<%- include('partials/footer') %>

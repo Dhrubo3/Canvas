@@ -1,0 +1,48 @@
+<%- include('partials/header') %>
+
+  <%- include('partials/navbar', {user: user}) %>
+  
+
+    <div class="container-fluid col-9 p-0" style="margin-top: 80px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                        <th scope="col">SL No.</th>
+                        <th scope="col">Student Name</th>
+                        <th scope="col">Student Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <td>1.</td>
+                        <td>Rafiuzzaman Rudhra</td>
+                        <td>@gmail.com</td>
+                        </tr>
+                        <tr>
+                        <td>2.</td>
+                        <td>Rafiuzzaman Rudhra</td>
+                        <td>@gmail.com</td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <form action="/students" method="post" class="w-50">
+            <div class="form-group d-flex mt-4">
+                <label for="select" class="col-sm-4 col-form-label">Add more students</label>
+                <select id="select" name="students" multiple placeholder="Select Students" data-search="true" data-silent-initial-value-set="true">
+                    <% for (var i = 0; i < students.length; i++) {%>
+                        <option value="<%= students[i].id %>"><%= students[i].user.name %> &nbsp;&nbsp; (<%= students[i].user.email %>) </option>
+                    <%}  %> 
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-25 mt-5"> Add Students </button>
+        </form>
+    </div>
+
+
+<%- include('partials/footer') %>

@@ -1,0 +1,65 @@
+<%- include('partials/header') %>
+
+  <%- include('partials/navbar', {user: user}) %>
+  
+
+    <div class="col-10 p-0" style="margin-top: 80px;">
+        <div class="container">
+            <% if(quizzes.length === 0){ %>
+                <div class="mb-4">
+                    <h4>No quizzes assigned yet</h4>
+                </div>
+            <%}%>
+            <div class="mb-4">
+                <a href="/<%=contentId%>/createquiz" class="btn btn-primary"> Create new quiz </a>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                        <th scope="col">SL No.</th>
+                        <th scope="col">Quiz Name</th>
+                        <th scope="col">Due Date & Time</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                        <th scope="col">Report</th>
+                        <th scope="col">Delete/Publish</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (var i = 0; i < quizzes.length; i++){ %>
+                            <tr>
+                                <td><%= i+1 %></td>
+                                <td><%=quizzes[i].name%></td>
+                                <td><%=quizzes[i].closeDate.toLocaleString()%></td>
+                                <td><%=quizzes[i].status%></td>
+                                <td>
+                                    <div class="d-flex">
+                                        <a href="/<%=contentId%>/<%=quizzes[i].id%>/mcqquestion" class="btn btn-info col ms-1 me-1">Add MCQ Questions</a>
+                                        <a href="/<%=contentId%>/<%=quizzes[i].id%>/textquestion" class="btn btn-secondary col ms-1 me-1">Add Text Questions</a>
+                                        <a href="/<%=contentId%>/<%=quizzes[i].id%>/voicequestion" class="btn btn-dark col ms-1 me-1">Add Voice Questions</a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex">
+                                        <a href="/<%=contentId%>/<%=quizzes[i].id%>/completequizreport" class="btn btn-info col ms-1 me-1">View Report</a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex">
+                                        <a href="/mcqquestion" class="btn btn-success col ms-1 me-1">Publish</a>
+                                        <a href="/publish" class="btn btn-danger col ms-1 me-1">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <%}%>
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<%- include('partials/footer') %>

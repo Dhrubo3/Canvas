@@ -1,0 +1,103 @@
+<%- include('partials/header') %>
+    <div id="participatingStudents" data-test=<%=participatingStudents %>></div>
+    <div id="correctStudents" data-test=<%=correctStudents %>></div>
+    <div id="pageNum" data-test=<%=pageNum %>></div>
+    <div id="section" data-test=<%=section %>></div>
+    
+    <div class="container-fluid m-5 ">
+        <div class="row">
+            <div class="col-6">
+                <img src="/uploads/<%=folderName%>/<%=imgName%>" alt="" style="width: 110%; height: auto;">
+            </div>
+            <div class="col-1">
+
+            </div>
+            <div class="col-5">
+                <div>
+                    <% if (totalStudents===participatingStudents){ %>
+                        <h4 class="ms-5 mt-3 ps-5 pt-5">All the students participated</h4>
+                    <%} else {%>
+                        <h4 class="ms-5 mt-3 ps-5 pt-5">
+                            <%=participatingStudents%> out of <%=totalStudents%> students participated
+                        </h4>
+                    <%}%>
+                </div>
+                <% if (parseInt(participatingStudents) > 0){ %>
+                    <div class="ps-2 pt-2">
+                        <canvas id="myChart" width="500" height="500"></canvas>
+                    </div>
+                <%}%>
+                <div class="row mt-5">
+                    <div>
+                        <h5>View Report on a particular section of the pdf: </h5>
+                    </div>
+                    <% const postLink = "/" + contentId + "/" + quizId + "/quizreportquery" %>
+                    <form action=<%=postLink%> method="post">
+                        <div>
+                            <select class="form-select w-25" name="page" id="selectPage">
+                                <option value="">Select Page</option>
+                                <% for (var i=0; i < numberOfPages; i++){ %>
+                                    <option value="<%=(i+1)%>">Page <%=(i+1)%>
+                                    </option>
+                                <%}%>
+                            </select>
+                            <select class="form-select w-25 mt-2" name="section" id="selectSection">
+                                <option value="">Select Section</option>
+                                <option value="top">Top</option>
+                                <option value="bottom">Bottom</option>
+                            </select>
+                        </div>
+                        <div class="w-25">
+                            <button type="submit" class="btn btn-primary w-75 mt-2">Go</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        var pageNum = document.getElementById('pageNum').dataset.test;
+        var section = document.getElementById('section').dataset.test;
+        document.getElementById("selectPage").value= pageNum;
+        document.getElementById("selectSection").value= section;
+
+        var participatingStudents = document.getElementById('participatingStudents').dataset.test;
+        var correctStudents = document.getElementById('correctStudents').dataset.test;
+        var wrongStudents = participatingStudents - correctStudents
+        var correctStudentPercent = (correctStudents / participatingStudents) * 100
+        var wrongStudentPercent = (wrongStudents / participatingStudents) * 100
+        const result = [wrongStudents, correctStudents]
+        const ctx = document.getElementById('myChart');
+
+        const data = {
+            labels: [
+                'Wrong Students (' + wrongStudentPercent + "%)",
+                'Correct Students (' + correctStudentPercent + "%)"
+            ],
+            datasets: [{
+                label: `Out of ${participatingStudents}`,
+                data: result,
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)'
+                ],
+                hoverOffset: 4
+            }]
+        };
+
+        const config = {
+            type: 'pie',
+            data: data,
+            options: {
+                responsive: false,
+            }
+        };
+
+        new Chart(ctx, config);
+    </script>
+
+
+    <%- include('partials/footer') %>

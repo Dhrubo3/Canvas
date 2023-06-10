@@ -1,0 +1,13 @@
+<%- include('partials/header') %>
+
+    <div class="d-flex flex-column justify-content-center top-center">
+        <h2 class="text-center">We will now take your faceID</h2>
+        <h3 class="text-center">Make sure your WebCam is on. Look at your webcam and press the button below.</h3>
+        <form action="/newface" method="post">
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-lg btn-primary">Upload Face</button>
+            </div>
+        </form>
+    </div>
+
+<%- include('partials/footer') %>

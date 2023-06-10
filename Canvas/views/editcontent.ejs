@@ -1,0 +1,24 @@
+<%- include('partials/header') %>
+
+    <div class="h-100 d-flex align-items-center justify-content-center p-5">
+        <!-- Get this below task id (1) from database -->
+        <form action="/<%=content.id%>/edittask" method="post" enctype="multipart/form-data" class="w-50">
+            <div class="form-group d-flex">
+                <label for="contentName" class="col-sm-2 col-form-label">Content Name</label>
+                <input type="text" name="contentName" class="form-control" id="contentName" value="<%=content.name%>">
+            </div>
+            <div class="form-group d-flex mt-4">
+                <% const dueTime = content.closeDate.toISOString().split('.')[0] %>
+                <label for="dateTime" class="col-sm-2 col-form-label">Closing Date</label>
+                <input type="datetime-local" name="dueDateTime" class="form-control" id="dateTime" min="2022-11-24T21:30"
+                 value="<%=dueTime%>"> <span class="validity"></span>
+            </div>
+            <div class="form-group d-flex mt-4 mb-5 row">
+                <p>Choose a new file to replace <b><%=content.originalFileName%></b></p>
+                <input type="file" id="formFile" name="uploadFile" class="form-control w-50" accept=".pdf" >
+            </div>
+            <button type="submit" class="btn btn-primary w-25"> Confirm Edit </button>
+        </form>
+    </div>
+
+<%- include('partials/footer') %>

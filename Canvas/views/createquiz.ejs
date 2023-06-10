@@ -1,0 +1,68 @@
+<%- include('partials/header') %>
+
+<div class="d-flex justify-content-center top-center mt-5">    
+    <form action="/<%=contentId%>/createquiz" method="post" class="w-50" id="form">
+        <div class="form-group d-flex mb-4">
+            <label for="quizname" class="col-sm-2 col-form-label">Quiz Name:*</label>
+            <input type="text" name="quizName" class="form-control " id="quizname" placeholder="Set a title for your quiz">
+        </div>
+        <div class="form-group d-flex mt-4">
+            <label for="dateTime" class="col-sm-2 col-form-label">Closing Date:*</label>
+            <input type="datetime-local" name="dueDateTime" class="form-control" id="dateTime" min="2022-11-24T21:30"> <span class="validity"></span>
+        </div>
+        <div class="row mt-5">
+            <div class="row justify-content-md-center">
+                <button type="submit" class="btn btn-primary w-25 mt-5"> Create Quiz </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+
+
+<!-- <div class="h-100 d-flex align-items-center justify-content-center p-5 row">
+    <div class="d-flex align-items-center justify-content-center row">    
+        <button class="btn btn-primary col-2 m-4" id="showMcq" onclick="showMcq()">Add MCQ Question</button>
+        <button class="btn btn-primary col-2 m-4" id="showText" onclick="showText()">Add Text Question</button>
+        <button class="btn btn-primary col-2 m-4" id="showVoice" onclick="showVoice()">Add Voice Question</button>
+    </div>
+    <form action="/createquestion" method="post" class="w-50" id="form">
+        
+        <button type="submit" class="btn btn-primary w-25 mt-5"> Create Quiz </button>
+    </form>
+</div>
+    
+    
+<div id="mcqQuestion" class="invisible">
+    <div class="form-group d-flex mb-4">
+        <label for="mcq" class="col-sm-2 col-form-label">Question:*</label>
+        <input type="text" name="mcq" class="form-control " id="mcq" placeholder="Write the question">
+        <button type="button" class="btn btn-danger ms-5" onclick="removeQuestion()" id="remove-question">Remove</button>
+    </div>
+</div>
+
+
+
+<script>
+    function showMcq() {
+        let div = document.createElement("div");
+        div.innerHTML = document.getElementById("mcqQuestion").innerHTML;
+        div.style.display = "block"
+        document.getElementById("form").prepend(div)
+    }
+
+    // $(".remove-question").on("click", function(){
+    //     $(this).closest("#mcqQuestion").remove();
+    // });
+
+    function removeQuestion(){
+        const removeDiv = document.getElementById("remove-question").closest("div").remove()
+    }
+</script> -->
+
+
+<%- include('partials/footer') %>

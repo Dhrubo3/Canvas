@@ -1,0 +1,344 @@
+<%- include('partials/header') %>
+
+    <div id="contentId" data-test=<%=contentId %>></div>
+    <div id="quizId" data-test=<%=quizId %>></div>
+    <div class="container mt-5 text-center">
+        <a href="/<%=contentId%>/quiz" class="btn btn-primary mb-4">Done</a>
+        <h4 class="text-center">Record Your Question</h4>
+        <div class="record-button-container text-center mt-2">
+            <button class="bg-transparent border btn record-button rounded-circle shadow-sm text-center"
+                id="questionRecordButton">
+                <img src="/images/microphone.png" alt="Record" class="img-fluid" style="width: 36px; height: 36px;" />
+            </button>
+        </div>
+        <div class="recorded-audio-container mt-3 d-none flex-column justify-content-center align-items-center"
+            id="questionRecordedAudioContainer">
+            <div class="actions mt-3">
+                <button type="button" class="btn btn-success rounded-pill d-none" id="questionSaveButton">Save</button>
+                <button type="button" class="btn btn-danger rounded-pill" id="questionDiscardButton">Discard</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container mt-5">
+        <h4 class="text-center">Record Your Answer</h4>
+        <div class="record-button-container text-center mt-2">
+            <button class="bg-transparent border btn record-button rounded-circle shadow-sm text-center"
+                id="answerRecordButton">
+                <img src="/images/microphone.png" alt="Record" class="img-fluid" style="width: 36px; height: 36px;" />
+            </button>
+        </div>
+        <div class="recorded-audio-container mt-3 d-none flex-column justify-content-center align-items-center"
+            id="answerRecordedAudioContainer">
+            <div class="actions mt-3">
+                <button type="button" class="btn btn-success rounded-pill d-none" id="answerSaveButton">Save</button>
+                <button type="button" class="btn btn-danger rounded-pill" id="answerDiscardButton">Discard</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="h-100 d-flex align-items-center justify-content-center p-5 row">
+        <form action="/<%=contentId%>/<%=quizId%>/addvoice" method="post" enctype="multipart/form-data" class="w-50" id="form">
+            <div class="form-group d-flex mt-2">
+                <label for="page" class="col-form-label col-sm-5">The page where the question is from:*</label>
+                <select class="form-select w-25" name="page">
+                    <option value="">Select</option>
+                    <% for (var i = 0; i < numberOfPages; i++){ %>
+                        <option value="Page <%=(i+1)%>">Page <%=(i+1)%></option>
+                    <%}%>
+                </select>
+            </div>
+
+            <div class="form-group d-flex mb-4 mt-2">
+                <label for="section" class="col-form-label col-sm-5">Page Section:*</label>
+                <select class="form-select w-25" name="section">
+                    <option value="">Select</option>
+                    <option value="top">Top</option>
+                    <option value="bottom">Bottom</option>
+                </select>
+            </div> 
+                
+
+            <div class="d-flex align-items-center justify-content-center row">
+                <button type="button" class="btn btn-primary w-25 mt-5 ms-3 me-3" onclick="answerSaveRecording()"> Add The Question </button>
+            </div>
+        </form>
+    </div>
+
+
+    <script type="text/javascript">
+        const questionRecordButton = document.getElementById('questionRecordButton');
+        const questionRecordButtonImage = questionRecordButton.firstElementChild;
+        const questionRecordedAudioContainer = document.getElementById('questionRecordedAudioContainer');
+        const questionSaveAudioButton = document.getElementById('questionSaveButton');
+        const questionDiscardAudioButton = document.getElementById('questionDiscardButton');
+
+        let questionChunks = []; // will be used later to record audio
+        let questionMediaRecorder = null; // will be used later to record audio
+        let questionAudioBlob = null; // the blob that will hold the recorded audio
+
+        function questionMediaRecorderDataAvailable(e) {
+            questionChunks.push(e.data);
+        }
+
+        function questionMediaRecorderStop() {
+            // check if there are any previous recordings and remove them
+            if (questionRecordedAudioContainer.firstElementChild.tagName === 'AUDIO') {
+                questionRecordedAudioContainer.firstElementChild.remove();
+            }
+            const questionAudioElm = document.createElement('audio');
+            questionAudioElm.setAttribute('controls', ''); // add controls
+            questionAudioBlob = new Blob(questionChunks, { type: 'audio/mp3' });
+            const questionAudioURL = window.URL.createObjectURL(questionAudioBlob);
+            questionAudioElm.src = questionAudioURL;
+            // show audio
+            questionRecordedAudioContainer.insertBefore(questionAudioElm, questionRecordedAudioContainer.firstElementChild);
+            questionRecordedAudioContainer.classList.add('d-flex');
+            questionRecordedAudioContainer.classList.remove('d-none');
+            // reset to default
+            questionMediaRecorder = null;
+            questionChunks = [];
+        }
+
+        function questionRecord() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('Your browser does not support recording!');
+                return;
+            }
+
+            // browser supports getUserMedia
+            // change image in button
+            questionRecordButtonImage.src = `/images/${questionMediaRecorder && questionMediaRecorder.state === 'recording' ? 'microphone' : 'stop'}.png`;
+            if (!questionMediaRecorder) {
+                // start recording
+                navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                })
+                    .then((stream) => {
+                        questionMediaRecorder = new MediaRecorder(stream);
+                        questionMediaRecorder.start();
+                        questionMediaRecorder.ondataavailable = questionMediaRecorderDataAvailable;
+                        questionMediaRecorder.onstop = questionMediaRecorderStop;
+                    })
+                    .catch((err) => {
+                        alert(`The following error occurred: ${err}`);
+                        // change image in button
+                        questionRecordButtonImage.src = '/images/microphone.png';
+                    });
+            } else {
+                // stop recording
+                questionMediaRecorder.stop();
+            }
+        }
+
+        questionRecordButton.addEventListener('click', questionRecord);
+
+        function questionResetRecording() {
+            if (questionRecordedAudioContainer.firstElementChild.tagName === 'AUDIO') {
+                questionRecordedAudioContainer.firstElementChild.remove();
+                // hide questionRecordedAudioContainer
+                questionRecordedAudioContainer.classList.add('d-none');
+                questionRecordedAudioContainer.classList.remove('d-flex');
+            }
+            questionAudioBlob = null;
+        }
+
+        // function playRecording(e) {
+        //     let button = e.target;
+        //     console.log(button)
+        //     if (button.tagName === 'IMG') {
+        //         // get parent button
+        //         button = button.parentElement;
+        //     }
+        //     const audio = button.previousElementSibling;
+        //     if (audio && audio.tagName === 'AUDIO') {
+        //         if (audio.paused) {
+        //             audio.play();
+        //             button.firstElementChild.src = 'images/pause.png';
+        //         } else {
+        //             audio.pause();
+        //             button.firstElementChild.src = 'images/play.png';
+        //         }
+        //     }
+        // }
+
+        // function createRecordingElement(file) {
+        //     const recordingElement = document.createElement('div');
+        //     recordingElement.classList.add('col-lg-2', 'col', 'recording', 'mt-3');
+        //     const audio = document.createElement('audio');
+        //     audio.src = file;
+        //     audio.onended = (e) => {
+        //         e.target.nextElementSibling.firstElementChild.src = 'images/play.png';
+        //     };
+        //     recordingElement.appendChild(audio);
+        //     const playButton = document.createElement('button');
+        //     playButton.classList.add('play-button', 'btn', 'border', 'shadow-sm', 'text-center', 'd-block', 'mx-auto');
+        //     const playImage = document.createElement('img');
+        //     playImage.src = '/images/play.png';
+        //     playImage.classList.add('img-fluid');
+        //     playButton.appendChild(playImage);
+        //     playButton.addEventListener('click', playRecording);
+        //     recordingElement.appendChild(playButton);
+        //     return recordingElement;
+        // }
+
+        // fetch recordings
+        // function fetchRecordings() {
+        //     fetch('/recordings')
+        //         .then((response) => response.json())
+        //         .then((response) => {
+        //             if (response.success && response.files) {
+        //                 recordingsContainer.innerHTML = ''; // remove all children
+        //                 response.files.forEach((file) => {
+        //                     const recordingElement = createRecordingElement(file);
+        //                     // console.log(file, recordingElement);
+        //                     recordingsContainer.appendChild(recordingElement);
+        //                 });
+        //             }
+        //         })
+        //         .catch((err) => console.error(err));
+        // }
+
+        function questionSaveRecording() {
+            var contentId = document.getElementById('contentId').dataset.test;
+            var quizId = document.getElementById('quizId').dataset.test;
+            const formData = new FormData();
+            formData.append('audio', questionAudioBlob, 'question.mp3');
+            fetch("/" + contentId + "/" + quizId + "/addvoice", {
+                method: 'POST',
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then(() => {
+                    alert('Your recording is saved');
+                    questionResetRecording();
+                })
+        }
+
+        questionSaveAudioButton.addEventListener('click', questionSaveRecording);
+
+        function questionDiscardRecording() {
+            if (confirm('Are you sure you want to discard the recording?')) {
+                // discard audio just recorded
+                questionResetRecording();
+            }
+        }
+
+        questionDiscardAudioButton.addEventListener('click', questionDiscardRecording);
+
+        // fetchRecordings();
+
+
+
+        const answerRecordButton = document.getElementById('answerRecordButton');
+        const answerRecordButtonImage = answerRecordButton.firstElementChild;
+        const answerRecordedAudioContainer = document.getElementById('answerRecordedAudioContainer');
+        const answerSaveAudioButton = document.getElementById('answerSaveButton');
+        const answerDiscardAudioButton = document.getElementById('answerDiscardButton');
+
+        let answerChunks = []; // will be used later to record audio
+        let answerMediaRecorder = null; // will be used later to record audio
+        let answerAudioBlob = null; // the blob that will hold the recorded audio
+
+        function answerMediaRecorderDataAvailable(e) {
+            answerChunks.push(e.data);
+        }
+
+        function answerMediaRecorderStop() {
+            // check if there are any previous recordings and remove them
+            if (answerRecordedAudioContainer.firstElementChild.tagName === 'AUDIO') {
+                answerRecordedAudioContainer.firstElementChild.remove();
+            }
+            const answerAudioElm = document.createElement('audio');
+            answerAudioElm.setAttribute('controls', ''); // add controls
+            answerAudioBlob = new Blob(answerChunks, { type: 'audio/mp3' });
+            const answerAudioURL = window.URL.createObjectURL(answerAudioBlob);
+            answerAudioElm.src = answerAudioURL;
+            // show audio
+            answerRecordedAudioContainer.insertBefore(answerAudioElm, answerRecordedAudioContainer.firstElementChild);
+            answerRecordedAudioContainer.classList.add('d-flex');
+            answerRecordedAudioContainer.classList.remove('d-none');
+            // reset to default
+            answerMediaRecorder = null;
+            answerChunks = [];
+        }
+
+        function answerRecord() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('Your browser does not support recording!');
+                return;
+            }
+
+            // browser supports getUserMedia
+            // change image in button
+            answerRecordButtonImage.src = `/images/${answerMediaRecorder && answerMediaRecorder.state === 'recording' ? 'microphone' : 'stop'}.png`;
+            if (!answerMediaRecorder) {
+                // start recording
+                navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                })
+                    .then((stream) => {
+                        answerMediaRecorder = new MediaRecorder(stream);
+                        answerMediaRecorder.start();
+                        answerMediaRecorder.ondataavailable = answerMediaRecorderDataAvailable;
+                        answerMediaRecorder.onstop = answerMediaRecorderStop;
+                    })
+                    .catch((err) => {
+                        alert(`The following error occurred: ${err}`);
+                        // change image in button
+                        answerRecordButtonImage.src = '/images/microphone.png';
+                    });
+            } else {
+                // stop recording
+                answerMediaRecorder.stop();
+            }
+        }
+
+        answerRecordButton.addEventListener('click', answerRecord);
+
+        function answerResetRecording() {
+            if (answerRecordedAudioContainer.firstElementChild.tagName === 'AUDIO') {
+                answerRecordedAudioContainer.firstElementChild.remove();
+                // hide answerRecordedAudioContainer
+                answerRecordedAudioContainer.classList.add('d-none');
+                answerRecordedAudioContainer.classList.remove('d-flex');
+            }
+            answerAudioBlob = null;
+        }
+
+        function answerSaveRecording() {
+            var contentId = document.getElementById('contentId').dataset.test;
+            var quizId = document.getElementById('quizId').dataset.test;
+            const formData = new FormData(form);
+            formData.append('audio', questionAudioBlob, 'question.mp3');
+            formData.append('audio', answerAudioBlob, 'answer.mp3');
+            fetch("/" + contentId + "/" + quizId + "/addvoice", {
+                method: 'POST',
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then(() => {
+                    alert('Your recording is saved');
+                    answerResetRecording();
+                })
+        }
+
+        answerSaveAudioButton.addEventListener('click', answerSaveRecording);
+
+        function answerDiscardRecording() {
+            if (confirm('Are you sure you want to discard the recording?')) {
+                // discard audio just recorded
+                answerResetRecording();
+            }
+        }
+
+        answerDiscardAudioButton.addEventListener('click', answerDiscardRecording);
+
+        // fetchRecordings();
+
+
+    </script>
+
+    <%- include('partials/footer') %>
